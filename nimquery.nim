@@ -749,9 +749,12 @@ func satisfies(pair: NodeWithContext, demand: Demand): bool =
         raiseAssert "Invalid demand: " & $demand
 
 func satisfies(pair: NodeWithContext, demands: seq[Demand]): bool =
-    for demand in demands:
-        if not pair.satisfies(demand):
-            return false
+    try:
+        for demand in demands:
+            if not satisfies(pair, demand):
+                return false
+    except Exception:
+        raise new Defect # bug in nim
     return true
 
 func exec*(query: Query, node: XmlNode, single: bool): seq[XmlNode] =
